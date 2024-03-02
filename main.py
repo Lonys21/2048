@@ -17,5 +17,14 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            game.mouse_down = True
+        elif event.type == pygame.MOUSEBUTTONUP:
+            game.mouse_down = False
+        elif event.type == pygame.MOUSEMOTION:
+            if game.mouse_down:
+                for b in game.blocs:
+                    if b.rect.collidepoint(event.pos):
+                        b.rect.center = event.pos
 
 pygame.quit()

@@ -5,13 +5,16 @@ class Game:
     def __init__(self, screen):
         self.screen = screen
         self.background_color = "black"
+
         # Constant
         self.BLOC_SIZE = self.screen.get_width()/4
 
         # Blocs
         self.bloc = Bloc(self, 0, 0, 2)
         self.blocs = pygame.sprite.Group()
+        self.blocs.add(self.bloc)
         self.font_bloc = pygame.font.SysFont("Arial", 40)
+        self.mouse_down = False
 
 
 
@@ -45,7 +48,8 @@ class Game:
 
     def update(self):
         self.screen.fill(self.background_color)
-        pygame.draw.rect(self.screen, self.set_color(self.bloc.value), (self.bloc.rect.x, self.bloc.rect.y, self.bloc.rect.width, self.bloc.rect.height))
-        self.screen.blit(self.font_bloc.render(str(self.bloc.value), True, (0, 0, 0)),
-                         self.set_font_position(self.bloc.rect, self.bloc.value, self.font_bloc))
+        for bloc in self.blocs:
+            pygame.draw.rect(self.screen, self.set_color(bloc.value), (bloc.rect.x, bloc.rect.y, bloc.rect.width, bloc.rect.height))
+            self.screen.blit(self.font_bloc.render(str(bloc.value), True, (0, 0, 0)),
+                             self.set_font_position(bloc.rect, bloc.value, self.font_bloc))
 
