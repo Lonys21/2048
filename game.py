@@ -4,17 +4,44 @@ from bloc import Bloc
 class Game:
     def __init__(self, screen):
         self.screen = screen
+        # Background
+        self.background = pygame.image.load("assets/grid.png")
         self.background_color = "black"
 
         # Constant
-        self.BLOC_SIZE = self.screen.get_width()/4
+        self.PLATFORM_SIZE = 16
+        self.BLOC_SIZE = (self.screen.get_width() - 16*5)/4
 
         # Blocs
-        self.bloc = Bloc(self, 0, 0, 2)
+        self.bloc = Bloc(self, 16, 216, 2)
         self.blocs = pygame.sprite.Group()
         self.blocs.add(self.bloc)
         self.font_bloc = pygame.font.SysFont("Arial", 40)
-        self.mouse_down = False
+
+        # Grid
+        self.grid = [[2, 2, 2, 4],
+                     [2, 2, 2, 2],
+                     [2, 4, 2, 2],
+                     [4, 2, 2, 4]]
+
+    def update_grid(self, direction):
+        if direction == 'left':
+            for i in self.grid[::]:
+                i_ = i[::]
+                for n in range(len(i)):
+                    if not n == 0:
+                        a = 1
+                        b = 0
+                        while i[(n-b)-a] == 0 and n-b > 0:
+                            print(i, n, i[n-b])
+                            i[(n-b)-a] = i[n-b]
+                            i[n-b] = 0
+                            b += 1
+                        if i[n-b] == i[n-b-1] and i[n-b-1] == i_[n-b-1]:
+                            i[n-b-1] = i[n-b]*2
+                            i[n-b] = 0
+        return
+
 
 
 
@@ -48,6 +75,7 @@ class Game:
 
     def update(self):
         self.screen.fill(self.background_color)
+        self.screen.blit(self.background, (0, 200))
         for bloc in self.blocs:
             pygame.draw.rect(self.screen, self.set_color(bloc.value), (bloc.rect.x, bloc.rect.y, bloc.rect.width, bloc.rect.height))
             self.screen.blit(self.font_bloc.render(str(bloc.value), True, (0, 0, 0)),
