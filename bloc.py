@@ -1,7 +1,7 @@
 import pygame
 
 class Bloc(pygame.sprite.Sprite):
-    def __init__(self, game):
+    def __init__(self, game, x, y, value):
         self.game = game
-        self.rect = pygame.rect.Rect(0, 0, 100, 100)
-        self.value = 20
+        self.rect = pygame.rect.Rect(x, y, self.game.BLOC_SIZE, self.game.BLOC_SIZE)
+        self.value = value
