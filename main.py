@@ -1,11 +1,19 @@
 import pygame
+from game import Game
 
 pygame.init()
 pygame.display.set_caption("2048")
-screen = pygame.display.set_mode((1000, 1000))
+screen = pygame.display.set_mode((800, 1000))
+game = Game(screen)
 
 running = True
 while running:
+    # update game
+    game.update()
+
+    # screen actualize
+    pygame.display.flip()
+
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
