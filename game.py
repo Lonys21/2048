@@ -10,19 +10,23 @@ class Game:
         self.background_color = "darkgray"
 
         # Constant
-        self.platform = 15
+        self.platform = 16
         self.TOP_SIZE = 200
-        self.BLOC_SIZE = (self.screen.get_width() - 16*5)/4 + 1
+        self.BLOC_SIZE = (self.screen.get_width() - 16*5)/4
+        print(self.BLOC_SIZE)
 
         # Blocs
-        self.bloc = Bloc(self, 16, 216, 2)
+        self.direction = ''
+        self.bloc = Bloc(self, self.platform*3 + self.BLOC_SIZE*2, 216, 2, 0)
+        self.bloc2 = Bloc(self, self.platform, 216, 2, 1)
         self.blocs = pygame.sprite.Group()
-        self.blocs.add(self.bloc)
+        self.blocs.add(self.bloc2, self.bloc)
         self.font_bloc = pygame.font.SysFont("Arial", 40)
+        self.blocs_coos = []
 
         # Grid
         # [[value, (x,y)]]
-        self.grid = [[[2, (self.platform, self.platform + self.TOP_SIZE)], [0, (self.platform*2 + self.BLOC_SIZE, self.platform + self.TOP_SIZE)],
+        """self.grid = [[[2, (self.platform, self.platform + self.TOP_SIZE)], [0, (self.platform*2 + self.BLOC_SIZE, self.platform + self.TOP_SIZE)],
                       [0, (self.platform*3 + self.BLOC_SIZE*2, self.platform + self.TOP_SIZE)], [2, (self.platform*4+self.BLOC_SIZE*3, self.platform + self.TOP_SIZE)]],
 
                      [[2, (self.platform, self.platform*2 + self.BLOC_SIZE + self.TOP_SIZE)], [0, (self.platform * 2 + self.BLOC_SIZE, self.platform*2 + self.BLOC_SIZE + self.TOP_SIZE)],
@@ -32,7 +36,27 @@ class Game:
                       [4, (self.platform * 3 + self.BLOC_SIZE * 2, self.platform*3 + self.BLOC_SIZE*2 + self.TOP_SIZE)], [0, (self.platform * 4+self.BLOC_SIZE*3, self.platform*3 + self.BLOC_SIZE*2 + self.TOP_SIZE)]],
 
                     [[2, (self.platform, self.platform*4 + self.BLOC_SIZE*3 + self.TOP_SIZE)], [2, (self.platform * 2 + self.BLOC_SIZE, self.platform*4 + self.BLOC_SIZE*3 + self.TOP_SIZE)],
-                     [2, (self.platform * 3 + self.BLOC_SIZE * 2, self.platform*4 + self.BLOC_SIZE*3 + self.TOP_SIZE)], [0, (self.platform * 4+self.BLOC_SIZE*3, self.platform*4 + self.BLOC_SIZE*3 + self.TOP_SIZE)]]]
+                     [2, (self.platform * 3 + self.BLOC_SIZE * 2, self.platform*4 + self.BLOC_SIZE*3 + self.TOP_SIZE)], [0, (self.platform * 4+self.BLOC_SIZE*3, self.platform*4 + self.BLOC_SIZE*3 + self.TOP_SIZE)]]]"""
+
+        self.grid = [[(self.platform, self.platform + self.TOP_SIZE),
+                        (self.platform * 2 + self.BLOC_SIZE, self.platform + self.TOP_SIZE),
+                        (self.platform * 3 + self.BLOC_SIZE * 2, self.platform + self.TOP_SIZE),
+                        (self.platform * 4 + self.BLOC_SIZE * 3, self.platform + self.TOP_SIZE)],
+
+                       [(self.platform, self.platform * 2 + self.BLOC_SIZE + self.TOP_SIZE),
+                        (self.platform * 2 + self.BLOC_SIZE, self.platform * 2 + self.BLOC_SIZE + self.TOP_SIZE),
+                        (self.platform * 3 + self.BLOC_SIZE * 2, self.platform * 2 + self.BLOC_SIZE + self.TOP_SIZE),
+                        (self.platform * 4 + self.BLOC_SIZE * 3, self.platform * 2 + self.BLOC_SIZE + self.TOP_SIZE)],
+
+                      [(self.platform, self.platform * 3 + self.BLOC_SIZE * 2 + self.TOP_SIZE),
+                       (self.platform * 2 + self.BLOC_SIZE, self.platform * 3 + self.BLOC_SIZE * 2 + self.TOP_SIZE),
+                       (self.platform * 3 + self.BLOC_SIZE * 2, self.platform * 3 + self.BLOC_SIZE * 2 + self.TOP_SIZE),
+                       (self.platform * 4 + self.BLOC_SIZE * 3, self.platform * 3 + self.BLOC_SIZE * 2 + self.TOP_SIZE)],
+
+                     [(self.platform, self.platform * 4 + self.BLOC_SIZE * 3 + self.TOP_SIZE),
+                      (self.platform * 2 + self.BLOC_SIZE, self.platform * 4 + self.BLOC_SIZE * 3 + self.TOP_SIZE),
+                      (self.platform * 3 + self.BLOC_SIZE * 2, self.platform * 4 + self.BLOC_SIZE * 3 + self.TOP_SIZE),
+                      (self.platform * 4 + self.BLOC_SIZE * 3, self.platform * 4 + self.BLOC_SIZE * 3 + self.TOP_SIZE)]]
 
     def update_grid_left(self):
         for i in self.grid:
@@ -48,6 +72,12 @@ class Game:
                     if i[n-b][0] == i[n-b-1][0] and i[n-b-1][0] == i_[n-b-1][0] and n - b > 0:
                         i[n-b-1][0] = i[n-b][0]*2
                         i[n-b][0] = 0
+
+    def update_grid_left_(self):
+        for b in self.blocs:
+            if not b.rect.x == self.platform:
+                b.rect.x -= 4
+
 
     def update_grid_right(self):
         k = 0
@@ -120,7 +150,27 @@ class Game:
         return (R, G, B)
 
     def update(self):
+        self.blocs_coos = []
         self.screen.fill(self.background_color)
         self.screen.blit(self.background, (0, 200))
-        self.update_block_grid()
+        # self.update_block_grid()
+        for bloc in self.blocs:
+            pygame.draw.rect(self.screen, self.set_color(bloc.value),
+                             (bloc.rect.x, bloc.rect.y, bloc.rect.width, bloc.rect.height))
+            self.screen.blit(self.font_bloc.render(str(bloc.value), True, (0, 0, 0)),
+                             self.set_font_position(bloc.rect.x, bloc.rect.y, bloc.value, self.font_bloc))
+            bloc.blocs = self.blocs.copy()
+            bloc.blocs.remove(self)
+            bloc.rect_coo = (bloc.rect.x, bloc.rect.y)
+            if self.direction == 'left':
+                if not bloc.moved:
+                    bloc.left()
+                    if bloc.moved:
+                        self.blocs_coos.append(bloc.rect_coo)
+                else:
+                    self.blocs_coos.append(bloc.rect_coo)
+
+
+    def checkcollision(self, sprite, group):
+        return pygame.sprite.spritecollide(sprite, group, False, pygame.sprite.collide_mask)
 
