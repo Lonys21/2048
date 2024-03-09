@@ -22,17 +22,17 @@ class Game:
 
         # Grid
         # [[value, (x,y)]]
-        self.grid = [[[0, (self.platform, self.platform + self.TOP_SIZE)], [16, (self.platform*2 + self.BLOC_SIZE, self.platform + self.TOP_SIZE)],
-                      [1024, (self.platform*3 + self.BLOC_SIZE*2, self.platform + self.TOP_SIZE)], [2, (self.platform*4+self.BLOC_SIZE*3, self.platform + self.TOP_SIZE)]],
+        self.grid = [[[2, (self.platform, self.platform + self.TOP_SIZE)], [0, (self.platform*2 + self.BLOC_SIZE, self.platform + self.TOP_SIZE)],
+                      [0, (self.platform*3 + self.BLOC_SIZE*2, self.platform + self.TOP_SIZE)], [2, (self.platform*4+self.BLOC_SIZE*3, self.platform + self.TOP_SIZE)]],
 
-                     [[2, (self.platform, self.platform*2 + self.BLOC_SIZE + self.TOP_SIZE)], [4, (self.platform * 2 + self.BLOC_SIZE, self.platform*2 + self.BLOC_SIZE + self.TOP_SIZE)],
-                      [2, (self.platform * 3 + self.BLOC_SIZE * 2, self.platform*2 + self.BLOC_SIZE + self.TOP_SIZE)], [16, (self.platform * 4 +self.BLOC_SIZE*3, self.platform*2 + self.BLOC_SIZE + self.TOP_SIZE)]],
+                     [[2, (self.platform, self.platform*2 + self.BLOC_SIZE + self.TOP_SIZE)], [0, (self.platform * 2 + self.BLOC_SIZE, self.platform*2 + self.BLOC_SIZE + self.TOP_SIZE)],
+                      [0, (self.platform * 3 + self.BLOC_SIZE * 2, self.platform*2 + self.BLOC_SIZE + self.TOP_SIZE)], [0, (self.platform * 4 +self.BLOC_SIZE*3, self.platform*2 + self.BLOC_SIZE + self.TOP_SIZE)]],
 
                      [[2, (self.platform, self.platform*3 + self.BLOC_SIZE*2 + self.TOP_SIZE)], [0, (self.platform * 2 + self.BLOC_SIZE, self.platform*3 + self.BLOC_SIZE*2 + self.TOP_SIZE)],
-                      [0, (self.platform * 3 + self.BLOC_SIZE * 2, self.platform*3 + self.BLOC_SIZE*2 + self.TOP_SIZE)], [2, (self.platform * 4+self.BLOC_SIZE*3, self.platform*3 + self.BLOC_SIZE*2 + self.TOP_SIZE)]],
+                      [4, (self.platform * 3 + self.BLOC_SIZE * 2, self.platform*3 + self.BLOC_SIZE*2 + self.TOP_SIZE)], [0, (self.platform * 4+self.BLOC_SIZE*3, self.platform*3 + self.BLOC_SIZE*2 + self.TOP_SIZE)]],
 
-                    [[4, (self.platform, self.platform*4 + self.BLOC_SIZE*3 + self.TOP_SIZE)], [16, (self.platform * 2 + self.BLOC_SIZE, self.platform*4 + self.BLOC_SIZE*3 + self.TOP_SIZE)],
-                     [2, (self.platform * 3 + self.BLOC_SIZE * 2, self.platform*4 + self.BLOC_SIZE*3 + self.TOP_SIZE)], [16, (self.platform * 4+self.BLOC_SIZE*3, self.platform*4 + self.BLOC_SIZE*3 + self.TOP_SIZE)]]]
+                    [[2, (self.platform, self.platform*4 + self.BLOC_SIZE*3 + self.TOP_SIZE)], [2, (self.platform * 2 + self.BLOC_SIZE, self.platform*4 + self.BLOC_SIZE*3 + self.TOP_SIZE)],
+                     [2, (self.platform * 3 + self.BLOC_SIZE * 2, self.platform*4 + self.BLOC_SIZE*3 + self.TOP_SIZE)], [0, (self.platform * 4+self.BLOC_SIZE*3, self.platform*4 + self.BLOC_SIZE*3 + self.TOP_SIZE)]]]
 
     def update_grid_left(self):
         for i in self.grid:
@@ -68,6 +68,20 @@ class Game:
             self.grid[k] = i[::-1]
             k += 1
 
+    def update_grid_down(self):
+        for i in range(len(self.grid)):
+            for n in range(len(self.grid)):
+                b = 0
+                if not n == 3:
+                    for i in range(2):
+                        if self.grid[n+b+1][i][0] == 0 and self.grid[n+b][i][0] != 0:
+                            self.grid[n+b+1][i][0] = self.grid[n+b][i][0]
+                            self.grid[n+b][i][0] = 0
+                            b += 1
+                        if n+b+1 < len(self.grid):
+                            if self.grid[n+b+1][i][0] == self.grid[n+b][i][0]:
+                                self.grid[n+b+1][i][0] = self.grid[n+b][i][0]*2
+                                self.grid[n+b][i][0] = 0
     def update_block_grid(self):
         for row in self.grid:
             for bloc in row:

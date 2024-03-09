@@ -22,5 +22,7 @@ while running:
                 game.update_grid_left()
             elif event.key == pygame.K_RIGHT:
                 game.update_grid_right()
+            elif event.key == pygame.K_DOWN:
+                game.update_grid_down()
 
 pygame.quit()
