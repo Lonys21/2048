@@ -13,13 +13,12 @@ class Game:
         self.platform = 16
         self.TOP_SIZE = 200
         self.BLOC_SIZE = (self.screen.get_width() - 16*5)/4
-        print(self.BLOC_SIZE)
 
         # Blocs
         self.direction = ''
         self.bloc = Bloc(self, self.platform, 216, 2, 0)
         self.bloc2 = Bloc(self, self.platform*2 + self.BLOC_SIZE, 216, 2, 1)
-        self.bloc3 = Bloc(self, self.platform*3 + self.BLOC_SIZE*2, 216, 2, 2)
+        self.bloc3 = Bloc(self, self.platform*3 + self.BLOC_SIZE*2, 216, 4, 2)
         self.blocs = pygame.sprite.Group()
         self.blocs.add(self.bloc, self.bloc2, self.bloc3)
         self.font_bloc = pygame.font.SysFont("Arial", 40)
@@ -58,7 +57,6 @@ class Game:
                       (self.platform * 2 + self.BLOC_SIZE, self.platform * 4 + self.BLOC_SIZE * 3 + self.TOP_SIZE),
                       (self.platform * 3 + self.BLOC_SIZE * 2, self.platform * 4 + self.BLOC_SIZE * 3 + self.TOP_SIZE),
                       (self.platform * 4 + self.BLOC_SIZE * 3, self.platform * 4 + self.BLOC_SIZE * 3 + self.TOP_SIZE)]]
-        print(self.grid)
 
     def update_grid_left(self):
         for i in self.grid:
@@ -167,6 +165,9 @@ class Game:
             if self.direction == 'left':
                 if not bloc.moved:
                     bloc.left()
+            elif self.direction == 'right':
+                if not bloc.moved:
+                    bloc.right()
 
 
     def update_blocs_coos(self):

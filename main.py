@@ -23,10 +23,15 @@ while running:
             if event.key == pygame.K_LEFT:
                 for b in game.blocs:
                     b.moved = False
+                    b.fusionned = False
                 game.direction = 'left'
                 #game.update_grid_left_()
             elif event.key == pygame.K_RIGHT:
-                game.update_grid_right()
+                for b in game.blocs:
+                    b.moved = False
+                    b.fusionned = False
+                game.direction = 'right'
+                # game.update_grid_right()
             elif event.key == pygame.K_DOWN:
                 game.update_grid_down()
 
