@@ -26,13 +26,13 @@ class Bloc(pygame.sprite.Sprite):
                         if b.value == self.value and b.id != self.id and not b.fusionned:
                             self.fusion_possible = True
                             self.fusion_bloc = b
-            if self.fusion_possible:
-                if self.rect.x <= self.fusion_bloc.rect.centerx:
-                    self.fusion_bloc.fusionned = True
-                    self.fusion_bloc.value = self.value * 2
-                    self.game.blocs.remove(self)
-                else:
-                    self.rect.x -= self.velocity
+                if self.fusion_possible and not self.fusion_bloc.fusionned and not self.fusionned:
+                    if self.rect.x <= self.fusion_bloc.rect.centerx and self.fusion_bloc in self.game.blocs:
+                        self.fusion_bloc.fusionned = True
+                        self.fusion_bloc.value = self.value * 2
+                        self.game.blocs.remove(self)
+                    else:
+                        self.rect.x -= self.velocity
         else:
             self.moved = True
 
@@ -46,16 +46,63 @@ class Bloc(pygame.sprite.Sprite):
                         if b.value == self.value and b.id != self.id and not b.fusionned:
                             self.fusion_possible = True
                             self.fusion_bloc = b
-            if self.fusion_possible:
+            if self.fusion_possible and not self.fusion_bloc.fusion_possible and not self.fusionned:
                 if self.rect.x + self.rect.width >= self.fusion_bloc.rect.centerx:
                     self.fusion_bloc.fusionned = True
                     self.fusion_bloc.value = self.value * 2
                     self.game.blocs.remove(self)
                 else:
                     self.rect.x += self.velocity
+            else:
+                self.fusion_possible = False
         else:
             self.moved = True
 
+    def down(self):
+        if not self.rect.y == self.game.TOP_SIZE + self.game.platform*4 + self.game.BLOC_SIZE*3:
+            if not (self.rect.x, self.rect.y + self.game.BLOC_SIZE + self.game.platform) in self.game.blocs_coos and not self.fusion_possible:
+                self.rect.y += self.velocity
+            else:
+                for b in self.game.blocs:
+                    if self.rect.y + self.game.BLOC_SIZE + self.game.platform == b.rect.y and self.rect.x == b.rect.x:
+                        if b.value == self.value and b.id != self.id and not b.fusionned:
+                            b.fusionned = True
+                            self.fusion_possible = True
+                            self.fusion_bloc = b
+            if self.fusion_possible and not self.fusion_bloc.fusion_possible and not self.fusionned:
+                if self.rect.y + self.rect.width >= self.fusion_bloc.rect.centery:
+                    self.fusion_bloc.fusionned = True
+                    self.fusion_bloc.value = self.value * 2
+                    self.game.blocs.remove(self)
+                else:
+                    self.rect.y += self.velocity
+            else:
+                self.fusion_possible = False
+        else:
+            self.moved = True
+
+    def up(self):
+        if not self.rect.y == self.game.TOP_SIZE + self.game.platform:
+            if not (self.rect.x, self.rect.y - self.game.BLOC_SIZE - self.game.platform) in self.game.blocs_coos and not self.fusion_possible:
+                self.rect.y -= self.velocity
+            else:
+                for b in self.game.blocs:
+                    if self.rect.y - self.game.BLOC_SIZE - self.game.platform == b.rect.y and self.rect.x == b.rect.x:
+                        if b.value == self.value and b.id != self.id and not b.fusionned:
+                            b.fusionned = True
+                            self.fusion_possible = True
+                            self.fusion_bloc = b
+            if self.fusion_possible and not self.fusion_bloc.fusion_possible and not self.fusionned:
+                if self.rect.y <= self.fusion_bloc.rect.centery:
+                    self.fusion_bloc.fusionned = True
+                    self.fusion_bloc.value = self.value * 2
+                    self.game.blocs.remove(self)
+                else:
+                    self.rect.y -= self.velocity
+            else:
+                self.fusion_possible = False
+        else:
+            self.moved = True
 
 
     def close_case(self):

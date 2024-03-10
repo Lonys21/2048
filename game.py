@@ -17,10 +17,13 @@ class Game:
         # Blocs
         self.direction = ''
         self.bloc = Bloc(self, self.platform, 216, 2, 0)
-        self.bloc2 = Bloc(self, self.platform*2 + self.BLOC_SIZE, 216, 2, 1)
-        self.bloc3 = Bloc(self, self.platform*3 + self.BLOC_SIZE*2, 216, 4, 2)
+        self.bloc2 = Bloc(self, self.platform, 412, 2, 1)
+        self.bloc3 = Bloc(self, self.platform, 608, 4, 2)
+        self.bloc4 = Bloc(self, self.platform*2 + self.BLOC_SIZE, self.TOP_SIZE + self.platform, 2, 3)
+        self.bloc5 = Bloc(self, self.platform*3 + self.BLOC_SIZE*2, self.TOP_SIZE + self.platform, 2, 4)
+        self.bloc6 = Bloc(self, self.platform*4 + self.BLOC_SIZE*3, self.TOP_SIZE + self.platform, 2, 5)
         self.blocs = pygame.sprite.Group()
-        self.blocs.add(self.bloc, self.bloc2, self.bloc3)
+        self.blocs.add(self.bloc, self.bloc2, self.bloc3, self.bloc4, self.bloc5, self.bloc6)
         self.font_bloc = pygame.font.SysFont("Arial", 40)
         self.blocs_coos = []
 
@@ -154,6 +157,7 @@ class Game:
         self.screen.fill(self.background_color)
         self.screen.blit(self.background, (0, 200))
         # self.update_block_grid()
+        # print(len(self.blocs))
         for bloc in self.blocs:
             pygame.draw.rect(self.screen, self.set_color(bloc.value),
                              (bloc.rect.x, bloc.rect.y, bloc.rect.width, bloc.rect.height))
@@ -168,6 +172,12 @@ class Game:
             elif self.direction == 'right':
                 if not bloc.moved:
                     bloc.right()
+            elif self.direction == 'down':
+                if not bloc.moved:
+                    bloc.down()
+            elif self.direction == 'up':
+                if not bloc.moved:
+                    bloc.up()
 
 
     def update_blocs_coos(self):

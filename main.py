@@ -24,16 +24,29 @@ while running:
                 for b in game.blocs:
                     b.moved = False
                     b.fusionned = False
+                    b.fusionned = False
                 game.direction = 'left'
                 #game.update_grid_left_()
             elif event.key == pygame.K_RIGHT:
                 for b in game.blocs:
                     b.moved = False
+                    b.fusion_possible = False
                     b.fusionned = False
                 game.direction = 'right'
                 # game.update_grid_right()
             elif event.key == pygame.K_DOWN:
-                game.update_grid_down()
+                for b in game.blocs:
+                    b.moved = False
+                    b.fusion_possible = False
+                    b.fusionned = False
+                game.direction = 'down'
+                # game.update_grid_down()
+            elif event.key == pygame.K_UP:
+                for b in game.blocs:
+                    b.moved = False
+                    b.fusion_possible = False
+                    b.fusionned = False
+                game.direction = 'up'
 
     clock.tick(FPS)
 
