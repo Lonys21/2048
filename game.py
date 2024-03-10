@@ -17,10 +17,11 @@ class Game:
 
         # Blocs
         self.direction = ''
-        self.bloc = Bloc(self, self.platform*3 + self.BLOC_SIZE*2, 216, 2, 0)
-        self.bloc2 = Bloc(self, self.platform, 216, 2, 1)
+        self.bloc = Bloc(self, self.platform, 216, 2, 0)
+        self.bloc2 = Bloc(self, self.platform*2 + self.BLOC_SIZE, 216, 2, 1)
+        self.bloc3 = Bloc(self, self.platform*3 + self.BLOC_SIZE*2, 216, 2, 2)
         self.blocs = pygame.sprite.Group()
-        self.blocs.add(self.bloc2, self.bloc)
+        self.blocs.add(self.bloc, self.bloc2, self.bloc3)
         self.font_bloc = pygame.font.SysFont("Arial", 40)
         self.blocs_coos = []
 
@@ -57,6 +58,7 @@ class Game:
                       (self.platform * 2 + self.BLOC_SIZE, self.platform * 4 + self.BLOC_SIZE * 3 + self.TOP_SIZE),
                       (self.platform * 3 + self.BLOC_SIZE * 2, self.platform * 4 + self.BLOC_SIZE * 3 + self.TOP_SIZE),
                       (self.platform * 4 + self.BLOC_SIZE * 3, self.platform * 4 + self.BLOC_SIZE * 3 + self.TOP_SIZE)]]
+        print(self.grid)
 
     def update_grid_left(self):
         for i in self.grid:
@@ -150,7 +152,7 @@ class Game:
         return (R, G, B)
 
     def update(self):
-        self.blocs_coos = []
+        self.update_blocs_coos()
         self.screen.fill(self.background_color)
         self.screen.blit(self.background, (0, 200))
         # self.update_block_grid()
@@ -165,12 +167,14 @@ class Game:
             if self.direction == 'left':
                 if not bloc.moved:
                     bloc.left()
-                    if bloc.moved:
-                        self.blocs_coos.append(bloc.rect_coo)
-                else:
-                    self.blocs_coos.append(bloc.rect_coo)
 
 
+    def update_blocs_coos(self):
+        self.blocs_coos = []
+        for b in self.blocs:
+            for row in self.grid:
+                if b.rect_coo in row and not b.rect_coo in self.blocs_coos:
+                    self.blocs_coos.append(b.rect_coo)
     def checkcollision(self, sprite, group):
         return pygame.sprite.spritecollide(sprite, group, False, pygame.sprite.collide_mask)
 

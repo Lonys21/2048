@@ -17,7 +17,6 @@ class Bloc(pygame.sprite.Sprite):
 
     def left(self):
         if not self.rect.x == self.game.platform:
-            print(self.game.blocs_coos)
             if not (self.rect.x - self.game.BLOC_SIZE - self.game.platform, self.rect.y) in self.game.blocs_coos and not self.fusion_possible:
                 self.rect.x -= self.velocity
             else:
