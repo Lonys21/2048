@@ -19,28 +19,25 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-        elif event.type == pygame.KEYDOWN:
+        elif event.type == pygame.KEYDOWN and game.verify_all_moved():
             if event.key == pygame.K_LEFT:
                 for b in game.blocs:
                     b.moved = False
-                    b.fusionned = False
+                    b.fusion_possible = False
                     b.fusionned = False
                 game.direction = 'left'
-                #game.update_grid_left_()
             elif event.key == pygame.K_RIGHT:
                 for b in game.blocs:
                     b.moved = False
                     b.fusion_possible = False
                     b.fusionned = False
                 game.direction = 'right'
-                # game.update_grid_right()
             elif event.key == pygame.K_DOWN:
                 for b in game.blocs:
                     b.moved = False
                     b.fusion_possible = False
                     b.fusionned = False
                 game.direction = 'down'
-                # game.update_grid_down()
             elif event.key == pygame.K_UP:
                 for b in game.blocs:
                     b.moved = False
