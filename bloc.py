@@ -27,7 +27,7 @@ class Bloc(pygame.sprite.Sprite):
                             if b.value == self.value and not b.fusionned:
                                 self.fusion_possible = True
                                 self.fusion_bloc = b
-                            else:
+                            elif b.moved:
                                 self.moved = True
                 if self.fusion_possible and not self.fusion_bloc.fusionned and not self.fusionned:
                     if self.rect.x <= self.fusion_bloc.rect.centerx and self.fusion_bloc in self.game.blocs:
@@ -48,12 +48,14 @@ class Bloc(pygame.sprite.Sprite):
                 for b in self.game.blocs:
                     if self.rect.x + self.game.BLOC_SIZE + self.game.platform == b.rect.x and self.rect.y == b.rect.y: #  find the block to the right
                         if b.id != self.id:
-                            if b.value == self.value:
-                                if not b.fusionned and not b.fusion_possible: # if same number, and not the right block already fusionned and not the right block fusionning
+                            if b.value == self.value: # same number
+                                if not b.fusionned and not b.fusion_possible: # if not the right block already fusionned and not the right block fusionning
                                     self.fusion_possible = True
                                     self.fusion_bloc = b
                                 else:
                                     self.fusion_possible = False
+                                    if b.moved:
+                                        self.moved = True
                             elif b.moved:
                                 self.moved = True
             if self.fusion_possible and not self.fusion_bloc.fusion_possible and not self.fusionned: # fusion possible and not the right block already fussionning and not myself already fussionned
@@ -81,7 +83,7 @@ class Bloc(pygame.sprite.Sprite):
                             if b.value == self.value and not b.fusionned:
                                 self.fusion_possible = True
                                 self.fusion_bloc = b
-                            else:
+                            elif b.moved:
                                 self.moved = True
             if self.fusion_possible and not self.fusion_bloc.fusion_possible and not self.fusionned:
                 if self.rect.y + self.rect.width >= self.fusion_bloc.rect.centery:
@@ -108,7 +110,7 @@ class Bloc(pygame.sprite.Sprite):
                                 b.fusionned = True
                                 self.fusion_possible = True
                                 self.fusion_bloc = b
-                            else:
+                            elif b.moved:
                                 self.moved = True
             if self.fusion_possible and not self.fusion_bloc.fusion_possible and not self.fusionned:
                 if self.rect.y <= self.fusion_bloc.rect.centery:

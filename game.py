@@ -37,24 +37,21 @@ class Game:
                       (self.platform * 4 + self.BLOC_SIZE * 3, self.platform * 4 + self.BLOC_SIZE * 3 + self.TOP_SIZE)]]
 
         # Blocs
+        self.id = 0
+        self.font_bloc = pygame.font.SysFont("Arial", 40)
         self.direction = ''
-        self.bloc = Bloc(self, self.platform, 216, 2, 0)
-        self.bloc2 = Bloc(self, self.platform, 412, 2, 1)
-        self.bloc3 = Bloc(self, self.platform, 608, 4, 2)
-        self.bloc4 = Bloc(self, self.platform*2 + self.BLOC_SIZE, self.TOP_SIZE + self.platform, 2, 3)
-        self.bloc5 = Bloc(self, self.platform*3 + self.BLOC_SIZE*2, self.TOP_SIZE + self.platform, 2, 4)
-        self.bloc6 = Bloc(self, self.platform*4 + self.BLOC_SIZE*3, self.TOP_SIZE + self.platform, 2, 5)
         self.blocs = pygame.sprite.Group()
-        i = 0
+        self.blocs_coos = []
+        self.spawn_block()
+        self.add_block = True
         n = 2
-        for row in self.grid:
-            n *= 2
+        """for row in self.grid:
             for coo in row:
-                self.blocs.add(Bloc(self, coo[0], coo[1], n, i))
-                i += 1
+                n *= 2
+                self.blocs.add(Bloc(self, coo[0], coo[1], n, self.id))
+                self.id += 1
                 self.font_bloc = pygame.font.SysFont("Arial", 40)
-                self.blocs_coos = []
-
+                self.blocs_coos = []"""
 
 
     def set_font_position(self, x, y, value, font):
@@ -94,8 +91,6 @@ class Game:
                              (bloc.rect.x, bloc.rect.y, bloc.rect.width, bloc.rect.height))
             self.screen.blit(self.font_bloc.render(str(bloc.value), True, (0, 0, 0)),
                              self.set_font_position(bloc.rect.x, bloc.rect.y, bloc.value, self.font_bloc))
-            bloc.blocs = self.blocs.copy()
-            bloc.blocs.remove(self)
             if self.direction == 'left':
                 if not bloc.moved:
                     bloc.left()
@@ -110,6 +105,14 @@ class Game:
                     bloc.up()
             bloc.rect_coo = (bloc.rect.x, bloc.rect.y)
             self.update_blocs_coos()
+            if self.verify_all_moved():
+                self.all_moved = True
+                if not self.add_block:
+                    self.spawn_block()
+                    self.update_blocs_coos()
+                    self.add_block = True
+            else:
+                self.all_moved = False
 
 
     def update_blocs_coos(self):
@@ -121,12 +124,44 @@ class Game:
     def checkcollision(self, sprite, group):
         return pygame.sprite.spritecollide(sprite, group, False, pygame.sprite.collide_mask)
 
+    def spawn_block(self):
+        rows_possible = []
+        grid_full = self.is_grid_full()
+        for i in range(len(grid_full)):
+            if not grid_full[i] == 4:
+                rows_possible.append(i)
+        if not rows_possible:
+            return
+        n = random.choice(rows_possible)
+        coo = random.choice(self.grid[n])
+        while coo in self.blocs_coos:
+            coo = random.choice(self.grid[n])
+
+
+        b = Bloc(self, coo[0], coo[1], 2, self.id)
+        self.blocs.add(b)
+        self.id += 1
+
     def verify_all_moved(self):
         a = 0
         for b in self.blocs:
             if b.moved:
                 a += 1
+            else:
+                print(b.rect_coo, self.direction)
         if a == len(self.blocs):
             return True
         return False
+
+    def is_grid_full(self):
+        a = []
+        for row in self.grid:
+            b = 0
+            for coo in row:
+                if coo in self.blocs_coos:
+                    b += 1
+            a.append(b)
+        return a
+
+
 

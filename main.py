@@ -19,8 +19,8 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-        elif event.type == pygame.KEYDOWN and game.verify_all_moved():
-            if event.key == pygame.K_LEFT:
+        elif event.type == pygame.KEYDOWN and game.all_moved:
+            """if event.key == pygame.K_LEFT:
                 for b in game.blocs:
                     b.moved = False
                     b.fusion_possible = False
@@ -43,7 +43,21 @@ while running:
                     b.moved = False
                     b.fusion_possible = False
                     b.fusionned = False
-                game.direction = 'up'
+                game.direction = 'up'"""
+            if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT or event.key == pygame.K_DOWN or event.key == pygame.K_UP:
+                for b in game.blocs:
+                    b.moved = False
+                    b.fusion_possible = False
+                    b.fusionned = False
+                if event.key == pygame.K_LEFT:
+                    game.direction = 'left'
+                elif event.key == pygame.K_RIGHT:
+                    game.direction = 'right'
+                elif event.key == pygame.K_DOWN:
+                    game.direction = 'down'
+                elif event.key == pygame.K_UP:
+                    game.direction = 'up'
+                game.add_block = False
 
     clock.tick(FPS)
 
