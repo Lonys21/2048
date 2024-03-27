@@ -7,13 +7,13 @@ class Game:
         self.screen = screen
         # Background
         self.background = pygame.image.load("assets/grid.png")
-        self.background = pygame.transform.scale(self.background, (800, 800))
+        #self.background = pygame.transform.scale(self.background, (800, 800))
         self.background_color = "darkgray"
 
         # Constant
-        self.platform = 16
-        self.TOP_SIZE = 200
-        self.BLOC_SIZE = (self.screen.get_width() - 16*5)/4
+        self.platform = 20
+        self.TOP_SIZE = 172
+        self.BLOC_SIZE = (self.screen.get_width() - self.platform*5)/4
 
         # Grid
         self.grid = [[(self.platform, self.platform + self.TOP_SIZE),
@@ -36,6 +36,13 @@ class Game:
                       (self.platform * 3 + self.BLOC_SIZE * 2, self.platform * 4 + self.BLOC_SIZE * 3 + self.TOP_SIZE),
                       (self.platform * 4 + self.BLOC_SIZE * 3, self.platform * 4 + self.BLOC_SIZE * 3 + self.TOP_SIZE)]]
 
+        # Points
+        self.points = 0
+        self.font_point = pygame.font.SysFont("Arial", 75)
+        self.font_point_x = self.screen.get_width()/2
+        self.font_point_y = 75
+
+
         # Blocs
         self.id = 0
         self.font_bloc = pygame.font.SysFont("Arial", 40)
@@ -54,10 +61,10 @@ class Game:
                 self.blocs_coos = []"""
 
 
-    def set_font_position(self, x, y, value, font):
+    def set_font_position(self, x, y, value, font, surface):
         font_size = font.size(str(value))
-        x_ = x + self.BLOC_SIZE/2 - font_size[0]/2
-        y_ = y + self.BLOC_SIZE/2 - font_size[1]/2
+        x_ = x + surface/2 - font_size[0]/2
+        y_ = y + surface/2 - font_size[1]/2
         return (x_, y_)
 
     def get_2_power(self, num):
@@ -85,12 +92,14 @@ class Game:
 
     def update(self):
         self.screen.fill(self.background_color)
-        self.screen.blit(self.background, (0, 200))
+        self.screen.blit(self.background, (0, self.TOP_SIZE))
+        self.screen.blit(self.font_point.render(str(self.points), True, (0, 0, 0)),
+                         self.set_font_position(self.font_point_x, self.font_point_y, self.points, self.font_point, 0))
         for bloc in self.blocs:
             pygame.draw.rect(self.screen, self.set_color(bloc.value),
                              (bloc.rect.x, bloc.rect.y, bloc.rect.width, bloc.rect.height))
             self.screen.blit(self.font_bloc.render(str(bloc.value), True, (0, 0, 0)),
-                             self.set_font_position(bloc.rect.x, bloc.rect.y, bloc.value, self.font_bloc))
+                             self.set_font_position(bloc.rect.x, bloc.rect.y, bloc.value, self.font_bloc, self.BLOC_SIZE))
             if self.direction == 'left':
                 if not bloc.moved:
                     bloc.left()
@@ -104,15 +113,15 @@ class Game:
                 if not bloc.moved:
                     bloc.up()
             bloc.rect_coo = (bloc.rect.x, bloc.rect.y)
-            self.update_blocs_coos()
-            if self.verify_all_moved():
-                self.all_moved = True
-                if not self.add_block:
-                    self.spawn_block()
-                    self.update_blocs_coos()
-                    self.add_block = True
-            else:
-                self.all_moved = False
+        self.update_blocs_coos()
+        if self.verify_all_moved():
+            self.all_moved = True
+            if not self.add_block:
+                self.spawn_block()
+                self.update_blocs_coos()
+                self.add_block = True
+        else:
+            self.all_moved = False
 
 
     def update_blocs_coos(self):
@@ -147,8 +156,6 @@ class Game:
         for b in self.blocs:
             if b.moved:
                 a += 1
-            else:
-                print(b.rect_coo, self.direction)
         if a == len(self.blocs):
             return True
         return False

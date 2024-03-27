@@ -4,8 +4,6 @@ class Bloc(pygame.sprite.Sprite):
     def __init__(self, game, x, y, value, id):
         super().__init__()
         self.game = game
-        """self.image = pygame.image.load('assets/Player.png')
-        self.image = pygame.transform.scale(self.image, (self.game.BLOC_SIZE, self.game.BLOC_SIZE))"""
         self.rect = pygame.rect.Rect(x, y, self.game.BLOC_SIZE, self.game.BLOC_SIZE)
         self.rect_coo = (self.rect.x, self.rect.y)
         self.blocs = pygame.sprite.Group()
@@ -13,7 +11,7 @@ class Bloc(pygame.sprite.Sprite):
         self.moved = True
         self.fusion_possible = False
         self.fusionned = False
-        self.velocity = 4
+        self.velocity = 20
         self.id = id
 
     def left(self):
@@ -34,6 +32,7 @@ class Bloc(pygame.sprite.Sprite):
                         self.fusion_bloc.fusionned = True
                         self.fusion_bloc.value = self.value * 2
                         self.fusion_bloc.moved = True
+                        self.game.points += self.fusion_bloc.value
                         self.game.blocs.remove(self)
                     else:
                         self.rect.x -= self.velocity
@@ -63,6 +62,7 @@ class Bloc(pygame.sprite.Sprite):
                     self.fusion_bloc.fusionned = True
                     self.fusion_bloc.value = self.value * 2 # fusionner value Double
                     self.fusion_bloc.moved = True
+                    self.game.points += self.fusion_bloc.value
                     self.game.blocs.remove(self) # delete myself
                 else:
                     self.rect.x += self.velocity # go to the right
@@ -90,6 +90,7 @@ class Bloc(pygame.sprite.Sprite):
                     self.fusion_bloc.fusionned = True
                     self.fusion_bloc.value = self.value * 2
                     self.fusion_bloc.moved = True
+                    self.game.points += self.fusion_bloc.value
                     self.game.blocs.remove(self)
                 else:
                     self.rect.y += self.velocity
@@ -117,6 +118,7 @@ class Bloc(pygame.sprite.Sprite):
                     self.fusion_bloc.fusionned = True
                     self.fusion_bloc.value = self.value * 2
                     self.fusion_bloc.moved = True
+                    self.game.points += self.fusion_bloc.value
                     self.game.blocs.remove(self)
                 else:
                     self.rect.y -= self.velocity
