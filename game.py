@@ -81,13 +81,20 @@ class Game:
 
     def set_color(self, value):
         pow = self.get_2_power(value)
-        R = 255 - 10*pow
-        G = 255 - 25*pow
-        B = 255 - 35*pow
+        if pow <= 11:
+            R = 255 - 10*pow
+            G = 255 - 25*pow
+            B = 255 - 35*pow
+        elif pow > 11:
+            G = 255 - pow*15
+            R = 255
+            B = 0
         if G < 0:
             G = 0
         if B < 0:
             B = 0
+        if R < 0:
+            R = 0
         return (R, G, B)
 
     def update(self):
@@ -147,7 +154,7 @@ class Game:
             coo = random.choice(self.grid[n])
 
 
-        b = Bloc(self, coo[0], coo[1], 2, self.id)
+        b = Bloc(self, coo[0], coo[1], 2048, self.id)
         self.blocs.add(b)
         self.id += 1
 
