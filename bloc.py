@@ -127,4 +127,19 @@ class Bloc(pygame.sprite.Sprite):
         else:
             self.moved = True
 
+    def verify_position(self, direction):
+        if self.moved:
+            if direction == 'left':
+                while not self.rect.x in self.game.x_positions:
+                    self.rect.x += 20
+            elif direction == 'right':
+                while not self.rect.x in self.game.x_positions:
+                    self.rect.x -= 20
+            if direction == 'up':
+                while not self.rect.y in self.game.y_positions:
+                    self.rect.y += 20
+            elif direction == 'down':
+                while not self.rect.y in self.game.y_positions:
+                    self.rect.y -= 20
+
 

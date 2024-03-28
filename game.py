@@ -51,6 +51,11 @@ class Game:
         self.blocs_coos = []
         self.spawn_block()
         self.add_block = True
+        self.x_positions = []
+        self.y_positions = []
+        for i in range(4):
+            self.x_positions += [self.platform + self.platform*i + self.BLOC_SIZE*i]
+            self.y_positions += [self.TOP_SIZE + self.platform + self.platform*i + self.BLOC_SIZE*i]
         n = 2
         """for row in self.grid:
             for coo in row:
@@ -119,6 +124,7 @@ class Game:
             elif self.direction == 'up':
                 if not bloc.moved:
                     bloc.up()
+            bloc.verify_position(self.direction)
             bloc.rect_coo = (bloc.rect.x, bloc.rect.y)
         self.update_blocs_coos()
         if self.verify_all_moved():
@@ -142,6 +148,10 @@ class Game:
 
     def spawn_block(self):
         rows_possible = []
+        n = random.randint(0, 10)
+        value = 2
+        if n > 8:
+            value = 4
         grid_full = self.is_grid_full()
         for i in range(len(grid_full)):
             if not grid_full[i] == 4:
@@ -154,7 +164,7 @@ class Game:
             coo = random.choice(self.grid[n])
 
 
-        b = Bloc(self, coo[0], coo[1], 2048, self.id)
+        b = Bloc(self, coo[0], coo[1], value, self.id)
         self.blocs.add(b)
         self.id += 1
 
