@@ -107,6 +107,7 @@ class Game:
         self.screen.blit(self.background, (0, self.TOP_SIZE))
         self.screen.blit(self.font_point.render(str(self.points), True, (0, 0, 0)),
                          self.set_font_position(self.font_point_x, self.font_point_y, self.points, self.font_point, 0))
+        self.sort_blocs()
         for bloc in self.blocs:
             pygame.draw.rect(self.screen, self.set_color(bloc.value),
                              (bloc.rect.x, bloc.rect.y, bloc.rect.width, bloc.rect.height))
@@ -137,6 +138,8 @@ class Game:
             self.all_moved = False
 
 
+
+
     def update_blocs_coos(self):
         self.blocs_coos = []
         for b in self.blocs:
@@ -148,9 +151,9 @@ class Game:
 
     def spawn_block(self):
         rows_possible = []
-        n = random.randint(0, 10)
+        n = random.randint(0, 20)
         value = 2
-        if n > 8:
+        if n > 18:
             value = 4
         grid_full = self.is_grid_full()
         for i in range(len(grid_full)):
@@ -186,6 +189,89 @@ class Game:
                     b += 1
             a.append(b)
         return a
+
+    def sort_blocs(self):
+        if self.direction == '':
+            return
+        if self.direction == 'left':
+            blocs = self.sort_left()
+        elif self.direction == 'right':
+            blocs = self.sort_right()
+        elif self.direction == 'up':
+            blocs = self.sort_up()
+        elif self.direction == 'down':
+            blocs = self.sort_down()
+        self.blocs = blocs
+
+    def sort_left(self):
+        blocs_coos = []
+        for b in self.blocs:
+            blocs_coos.append((b.rect.x, b.id))
+        blocs_coos.sort(key=self.sort_coos)
+        blocs = pygame.sprite.Group()
+        while not len(blocs_coos) == 0:
+            for b in self.blocs:
+                if len(blocs_coos) == 0:
+                    break
+                if blocs_coos[0][1] == b.id:
+                    blocs.add(b)
+                    del blocs_coos[0]
+        return blocs
+
+    def sort_right(self):
+        blocs_coos = []
+        for b in self.blocs:
+            blocs_coos.append((b.rect.x, b.id))
+        blocs_coos.sort(key=self.sort_coos, reverse=True)
+        blocs = pygame.sprite.Group()
+        while not len(blocs_coos) == 0:
+            for b in self.blocs:
+                if len(blocs_coos) == 0:
+                    break
+                if blocs_coos[0][1] == b.id:
+                    blocs.add(b)
+                    del blocs_coos[0]
+        return blocs
+
+    def sort_up(self):
+        blocs_coos = []
+        for b in self.blocs:
+            blocs_coos.append((b.rect.y, b.id))
+        blocs_coos.sort(key=self.sort_coos)
+        blocs = pygame.sprite.Group()
+        while not len(blocs_coos) == 0:
+            for b in self.blocs:
+                if len(blocs_coos) == 0:
+                    break
+                if blocs_coos[0][1] == b.id:
+                    blocs.add(b)
+                    del blocs_coos[0]
+        return blocs
+
+    def sort_down(self):
+        blocs_coos = []
+        for b in self.blocs:
+            blocs_coos.append((b.rect.y, b.id))
+        blocs_coos.sort(key=self.sort_coos, reverse=True)
+        blocs = pygame.sprite.Group()
+        while not len(blocs_coos) == 0:
+            for b in self.blocs:
+                if len(blocs_coos) == 0:
+                    break
+                if blocs_coos[0][1] == b.id:
+                    blocs.add(b)
+                    del blocs_coos[0]
+        return blocs
+
+
+    def sort_coos(self, bloc_coo):
+        return bloc_coo[0]
+
+
+
+
+
+
 
 
 
